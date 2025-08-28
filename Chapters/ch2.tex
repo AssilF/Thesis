@@ -2,7 +2,7 @@
 \label{chap:battery}
 
 \section{Introduction}
-In robotic systems, batteries are not merely an energy source—they are a critical component that directly influences performance, autonomy, and reliability. Robotics applications, from mobile platforms to embedded sensor nodes, require power systems that are both energy-dense and robust against degradation. This chapter provides a comprehensive overview of battery power fundamentals, key battery parameters (such as capacity, C-rate, and internal resistance), energy conversion and loss mechanisms, charging methodologies, and advanced battery management techniques. Special emphasis is placed on how these concepts underpin robotic applications. Recent research highlights, including works by Roscher \emph{et al.} \cite{Roscher2011}, Rauf \emph{et al.} \cite{Rauf2022}, and Rahman and Alharbi \cite{Rahman2024}, are discussed throughout to present state-of-the-art insights.
+In robotic systems, batteries are not merely an energy source---they are a critical component that directly influences performance, autonomy, and reliability. Robotics applications, from mobile platforms to embedded sensor nodes, require power systems that are both energy-dense and robust against degradation. This chapter provides a comprehensive overview of battery power fundamentals, key battery parameters (such as capacity, C-rate, and internal resistance), energy conversion and loss mechanisms, charging methodologies, and advanced battery management techniques. Special emphasis is placed on how these concepts underpin robotic applications. Recent research highlights, including works by Roscher \emph{et al.} \cite{Roscher2011}, Rauf \emph{et al.} \cite{Rauf2022}, and Rahman and Alharbi \cite{Rahman2024}, are discussed throughout to present state-of-the-art insights.
 
 \section{Fundamentals of Battery Power}
 Batteries convert stored chemical energy into electrical energy, powering robotic operations through controlled electrochemical reactions. The instantaneous power output \(P\) of a battery is given by:
@@ -29,7 +29,7 @@ where \(Q\) denotes the capacity. In robotics, high capacity is crucial for exte
 The C-rate is defined as the charge or discharge current normalized by the battery's nominal capacity. For example, a 1C rate implies that the battery discharges its full capacity in one hour. If a 2 Ah battery is discharged at 2 A, the rate is 1C; at 4 A, it is 2C. Higher C-rates can lead to rapid energy delivery, which is desirable for high-power maneuvers in robotics. However, they also induce thermal stress and accelerate degradation \cite{Rahman2024}.
 
 \subsection{Internal Resistance and Voltage Drop}
-The battery’s internal resistance \(R_{\text{int}}\) is a key factor that affects its performance. Under load, the voltage drop across \(R_{\text{int}}\) can be expressed as:
+The battery's internal resistance \(R_{\text{int}}\) is a key factor that affects its performance. Under load, the voltage drop across \(R_{\text{int}}\) can be expressed as:
 \begin{equation}
 V_{\text{drop}} = I \times R_{\text{int}}.
 \end{equation}
