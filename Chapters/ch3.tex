@@ -1,0 +1,16 @@
+\chapter{Discovery and pairing system:}
+\label{chap:discovery}
+
+We've already established that our notion of "generalized platforms" implies cross-platform functionlaity, we need us an "on-platform" system that can identify other pair-able platforms nearby/from the cloud, their types, fetch their characteristics and parameters and give the user the ability to exploit such features. How can we go on about such a system?
+
+We could initially develop our own physical link, protocol and system, or we can use something cheap and robust and already well documented such as ESP-NOW, since most of our robots are ESP32 based or incorporate ESP32 for connectivity, this makes it the perfect choice. ESP-NOW should give us a ready to use physical link and protocol, and all is left for us to develop is the pairing system and identification system, which is mostly software after we make the boards on BULKY and THEGILL self identify the plugged in peripherals, and Microtomba and others being breadboard based and manually configured, we can implement such system on every platform but with different interfaces, where we have a UI we can control behaviours from the robot itself such the case of BULKY, or we can use a controller for such behaviours too such is the case with ILITE, we can make all intercommunicate to create synergy or emergeant behaviour or a hive system, let's call it ASCE OPENswarm system, this would raise certain concerns like safety of operation, how do we detect unsafe scenarios and raise an exception to the user ? how do we make certain features apply to only a certain combination of platforms ? so on so on.
+
+%note on the design, architecture, diagram and philosophy of such system
+%note on how we will implement it differently
+%note on the software implementation
+%note on the user experience and interface and safety
+%add diagram behind philosophy
+%add technical diagram
+%refer to code
+%add experiments
+%add discussion

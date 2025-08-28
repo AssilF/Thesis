@@ -1,0 +1,82 @@
+\documentclass[12pt,a4paper]{scrreport}
+\RequirePackage[2023/11/01]{latexrelease}
+% Packages
+% \usepackage[english]{babel}  
+\usepackage[T1]{fontenc}    
+\usepackage[utf8]{inputenc} 
+\usepackage[left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}       
+\usepackage{graphicx}       
+\usepackage{hyperref}       
+\usepackage[backend=biber]{biblatex}
+\usepackage{easyReview}
+\addbibresource{bibliography.bib} 
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+ \usepackage{booktabs}
+\usepackage{tabularx}
+ \usepackage{array}
+   \usepackage{float} % Required for [H] placement
+ % ---------- Layout ----------
+\usepackage{setspace}
+\onehalfspacing
+% ---------- Math & Symbols ----------
+\usepackage{amsmath,amssymb}
+% ---------- Code Listings ----------
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{%
+basicstyle=\ttfamily\small,
+columns=fullflexible,
+showstringspaces=false,
+breaklines=true,
+frame=single,
+framerule=0.2pt,
+rulecolor=\color{black},
+tabsize=2,
+keepspaces=true
+}
+\captionsetup{labelfont=bf}
+% Page Layout
+% \geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\input{cmds}
+\begin{document}
+
+% Title Page
+\begin{titlepage}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figures/LOGO-UFAS1-2020.png} % University logo
+    \\
+    {\LARGE \textbf{Development of Modular Robotic Platforms}}\\[1cm]
+    {\Large \textbf{for Development, Research and Education}}\\[2cm]
+    \textbf{Presented by:} \textsc{Assil M. Ferahta}\\
+    For the degree of \textbf{Masters} in \textbf{Embedded Systems Electronics}\\[1cm]
+    \textbf{University:} Setif 1 Ferhat Abbas\\
+    \textbf{Thesis Supervisor:} Dr. Younes Terchi\\
+    \textbf{Date:} 2, 2025\\[2cm]
+
+    \vfill
+\end{titlepage}
+
+% Front matter
+\input{Chapters/acknowledgments}
+\input{Chapters/abstract}
+
+% Table of Contents
+\tableofcontents
+\newpage
+
+%Chapters
+\input{Chapters/introduction}
+\input{Chapters/ch0}
+\input{Chapters/ch1}
+\input{Chapters/ch2}
+\input{Chapters/ch3}
+\input{Chapters/ch4}
+\input{Chapters/conclusion}
+
+% Bibliography
+
+\printbibliography
+
+\end{document}
