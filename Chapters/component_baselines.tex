@@ -1,0 +1,77 @@
+\chapter{Component Baselines}\label{chap:component-baselines}
+
+\section{Power Systems}\label{sec:power-systems}
+Reliable mobile robots begin with a well designed power subsystem. Lithium-ion and lithium-polymer cells dominate due to their high energy density, while nickel--metal hydride remains attractive for low-cost applications. Monitoring state of health through impedance tracking or capacity fade models extends lifespan and informs replacement schedules\cite{Roscher2011,Rahman2024}. Power budgeting balances peak and average loads using $P = VI$ and runtime estimation $t = \frac{C}{I}$, where $C$ is cell capacity. Energy delivered over a mission is $E=\int_0^T V(t)I(t)\,dt$ with margin for conversion losses\cite{Rauf2022}. Figure~\ref{fig:thevenin} sketches a simple Thevenin battery model.
+
+\begin{figure}[h]
+  \centering
+  \begin{circuitikz}
+    \draw (0,0) to[battery1,l_=$V_{oc}$] (0,-2) to[R=$R_{int}$] (3,-2) -- (3,0) -- (0,0);
+    \draw (3,0) -- (4,0) node[right]{$V_{out}$};
+  \end{circuitikz}
+  \caption{Thevenin model of a cell with internal resistance $R_{int}$}
+  \label{fig:thevenin}
+\end{figure}
+
+A pair of 18650 cells ($C=2.5\,\mathrm{Ah}$ each) in series delivering $5\,\mathrm{A}$ provides roughly $t=(2.5\,\mathrm{Ah})/5\,\mathrm{A}=0.5\,\mathrm{h}$ of operation.
+
+\section{Actuation}\label{sec:actuation}
+Robotic actuators range from brushed DC motors to brushless DC (BLDC) and stepper motors. Back-EMF and current sensing provide electrical feedback signatures, enabling closed loops beyond simple duty-cycle control. The electromechanical relationships $\tau = K_t I$ and $E = K_e \omega$ connect torque $\tau$, current $I$, back-EMF $E$, and speed $\omega$. When paired with incremental or absolute encoders, these motors form velocity or position loops that underpin precision motion\cite{Spong2006}. For example, a motor with $K_t=0.1\,\mathrm{Nm/A}$ drawing $2\,\mathrm{A}$ produces $0.2\,\mathrm{Nm}$.
+
+\section{Sensing}\label{sec:sensing}
+Inertial measurement units, range sensors, and tactile arrays supply complementary observations. Off-the-shelf modules coexist with custom-built boards, e.g., a hand-soldered time-of-flight array or a 3D-printed force pad. Fusing such heterogeneous data demands careful calibration and timing\cite{Siciliano2009}. A complementary filter fuses gyroscope and accelerometer signals,
+\begin{equation}
+\hat{\theta} = \alpha (\hat{\theta}_{k-1} + \dot{\theta}\Delta t) + (1-\alpha)\theta_{\text{acc}},
+\end{equation}
+where $\alpha$ trades off drift and noise.
+
+\section{Microcontroller I/O}\label{sec:mcu-io}
+Microcontrollers expose digital, analog, and communication peripherals. Patterns such as interrupt-driven GPIO, DMA-backed ADC sampling, and timer-based PWM keep tasks deterministic. Sampling period $T$ and frequency $f_s$ relate via $f_s=1/T$, and Nyquist demands $f_s \ge 2 f_{\text{signal}}$. Designers budget latency by aligning interrupt service routines and clock domains with required control rates\cite{Valvano2015}.
+
+\section{Software Frameworks}\label{sec:frameworks}
+Robotics middleware like ROS~2 and micro-ROS bring publish--subscribe semantics and component life-cycle management to resource-constrained devices\cite{ros22021,microros2023}. Their nodes map cleanly onto ports and adapters, reinforcing the hexagonal philosophy of isolating application logic from technology details\cite{cockburn2005hexagonal}. A minimal motor driver node exposes a command topic and an encoder subscription:
+\begin{lstlisting}[language=Python]
+rclpy.init()
+node = rclpy.create_node("motor_driver")
+cmd_pub = node.create_publisher(Float32, "cmd", 10)
+enc_sub = node.create_subscription(Float32, "enc", cb, 10)
+rclpy.spin(node)
+\end{lstlisting}
+
+\section{Kinematic Models}\label{sec:kinematics}
+Forward kinematics map joint angles $\theta$ to end-effector pose via
+\begin{equation}
+\begin{bmatrix}x\\y\end{bmatrix}=\begin{bmatrix}l_1\cos\theta_1+l_2\cos(\theta_1+\theta_2)\\l_1\sin\theta_1+l_2\sin(\theta_1+\theta_2)\end{bmatrix},
+\end{equation}
+while inverse kinematics recover
+\begin{align}
+\theta_2 &= \cos^{-1}\frac{x^2+y^2-l_1^2-l_2^2}{2 l_1 l_2},\\
+\theta_1 &= \tan^{-1}\frac{y}{x}-\tan^{-1}\frac{l_2\sin\theta_2}{l_1+l_2\cos\theta_2}.
+\end{align}
+Gyroscopic stabilization augments these models by integrating angular-rate feedback to maintain orientation\cite{Craig2005,Lynch2017}. Figure~\ref{fig:two-link} illustrates a planar two-link manipulator.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{image.png}
+    \caption{Planar two-link manipulator}
+    \label{fig:two-link}
+\end{figure}
+
+\section{Abstracting Components}\label{sec:abstracting}
+Future plug-and-play modules can advertise their identity through an analog voltage signature. Each breakout board hosts a resistor $R_{\text{id}}$ that forms a divider with a pull-up $R_{\text{pull}}$ on the main bus, producing
+\begin{equation}
+V_{\text{id}} = V_{\text{ref}}\frac{R_{\text{id}}}{R_{\text{pull}}+R_{\text{id}}},
+\end{equation}
+which the MCU reads via an ADC to detect the attached module, conceptually similar to the self-describing interfaces of the IEEE~1451 standard\cite{IEEE1451}. Figure~\ref{fig:res-id} shows a simple implementation.
+
+\begin{figure}[h]
+  \centering
+  \begin{circuitikz}
+    \draw (0,0) node[left]{$V_{\text{ref}}$} to[R=$R_{\text{id}}$] (0,-2) node[left]{GND};
+    \draw (0,0) -- (2,0) to[R=$R_{\text{pull}}$] (2,-2) node[left]{GND};
+    \draw (2,0) -- (3,0) node[right]{MCU ADC};
+  \end{circuitikz}
+  \caption{Resistor-divider ID circuit for plug-and-play modules}
+  \label{fig:res-id}
+\end{figure}
+
