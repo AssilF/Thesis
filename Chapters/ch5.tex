@@ -1,0 +1,104 @@
+\chapter{Hexagonal Architecture for Robotic Systems}
+\label{chap:hexagonal-robotics}
+
+Modular robotic platforms benefit from a structural philosophy that isolates concerns while enabling reuse and evolution across
+mechanical, electrical, and software domains. The hexagonal architecture—also called the ports-and-adapters style—provides
+such a philosophy by treating each subsystem as an independent ``hexagon'' exposing well-defined ports to the outside world.
+Cockburn describes ports as ``driving adapters that isolate the application'' \cite{cockburn2005hexagonal}; we use these
+adapters to separate robot hardware from the behaviours that drive it. Parnas noted that ``each module hides its secrets from
+the others'' \cite{parnas1972}, which in our context means a gearbox or board reveals only its advertised ports while masking
+implementation details. Meyer adds that ``clients must ensure preconditions'' \cite{meyer1992}; by publishing those
+preconditions alongside every port, we prevent misuse and enable independent evolution of modules. In this chapter we extend
+the hexagonal concept beyond software into robot-building, composing mechanical drives, circuit boards, microcontrollers, and
+peripheral modules through contractual ports. The goal is not only architectural elegance but a practical path toward
+scalable, versionable platforms that can adapt to new behaviours and physical configurations without revisiting foundational
+design decisions.
+
+\section{Mechanical Hexagons}
+Parnas's maxim that ``each module hides its secrets'' \cite{parnas1972} guides the physical layer of our platform. Gearboxes
+equipped with speed encoders expose rotational-speed and load ports, enabling standardized feedback loops regardless of gear
+ratio. Craig reminds us that ``feedback from encoders closes the loop'' \cite{Craig2005}; accordingly, every mechanical hexagon
+exports encoder counts so that higher layers can stabilize motion. Siciliano observes that ``mounting interfaces standardize
+kinematic chains'' \cite{Siciliano2009}, inspiring our contracts for bolt patterns and center-of-mass references. By
+encapsulating torque limits, precision classes, and mounting matrices inside mechanical hexagons, upstream electronics or
+control software can rely upon consistent mechanical behaviour. This contract-driven view lets platforms swap drive units or
+chassis elements without redesigning downstream electronics or software, much as software modules can be replaced when their
+interfaces remain stable.
+
+\begin{figure}[H]
+  \centering
+  \fbox{\rule{0pt}{2in} \rule{3in}{0pt}}
+  \caption{Exploded view of a gearbox hexagon with highlighted speed and torque ports.}
+  \label{fig:mech_hex}
+\end{figure}
+
+\section{Circuit Hexagons}
+Circuit boards act as the second layer of hexagons. The \emph{Bulker} board routes power to four motor channels and includes
+quadrature inputs for encoders, but its current capability is limited. Conversely, the \emph{Giller} board provides higher
+current outputs for four motors but omits encoder support. Each board exposes electrical ports that describe voltage limits,
+connector pinouts, current envelopes, and available sensing lines. By treating boards as interchangeable hexagons, a developer
+selects the appropriate circuit for a task while the rest of the system interacts only with the declared ports, enabling
+versioning of electronics independently from mechanics or software. Meyer's insistence that ``clients must ensure
+preconditions'' \cite{meyer1992} motivates the documentation of allowable voltage and current ranges for every port.
+
+\begin{figure}[H]
+  \centering
+  \fbox{\rule{0pt}{2in} \rule{3in}{0pt}}
+  \caption{Comparison of Bulker and Giller circuit hexagons showing differing encoder and current ports.}
+  \label{fig:circuit_hex}
+\end{figure}
+
+\section{Microcontroller Hexagons}
+Baldwin and Woodard describe platforms as having ``a stable core and variable periphery'' \cite{baldwin2009platforms}. In our
+design, the ESP32 microcontroller forms part of that stable core. Bulker and Giller both employ the ESP32, which offers
+Wi-Fi, Bluetooth, and ESP-NOW communication. We abstract the ESP32 as another hexagon whose ports specify compute resources,
+communication protocols, and timing guarantees. Firmware adapters map these ports to the mechanical and circuit hexagons,
+isolating application logic from device-specific details. By keeping communication ports stable, processor upgrades or protocol
+extensions occur without cascading changes across the system, facilitating long-term maintenance.
+
+\begin{figure}[H]
+  \centering
+  \fbox{\rule{0pt}{2in} \rule{3in}{0pt}}
+  \caption{ESP32 hexagon illustrating wireless and timing ports connected to circuit and mechanical hexagons.}
+  \label{fig:mcu_hex}
+\end{figure}
+
+\section{Peripheral Hexagons}
+Gawer and Cusumano argue that platform leaders ``nurture complementary innovation'' \cite{gawer2002platformleadership}. Our
+peripheral hexagons embody that idea: the \emph{Mech'iane} subsystem mounts to Giller and implements an articulated robotic arm
+that contributes complementary capabilities. Its ports include motor commands, inverse-kinematics services, and safety
+interlocks. Tiwana observes that ``architecture and governance jointly shape platform evolution'' \cite{tiwana2014platformecosystems};
+by defining the ports of peripherals, we govern how external modules may extend the platform. Because Giller exposes a uniform
+motor-control port, Mech'iane plugs into it without changing the rest of the platform. Additional peripherals—such as range
+sensors or grippers—become new hexagons whose adapters translate their signals into the platform's contracts. Framing
+high-level behaviours as hexagons thus allows complex capabilities to be added or replaced without re-engineering the core system.
+
+\begin{figure}[H]
+  \centering
+  \fbox{\rule{0pt}{2in} \rule{3in}{0pt}}
+  \caption{Mech'iane peripheral hexagon attached to Giller through standard motor-control ports.}
+  \label{fig:peripheral_hex}
+\end{figure}
+
+\section{System Composition}
+The overall robot emerges by composing hexagons: mechanical drives connect to circuit boards, which connect to the ESP32 hexagon, which in turn connects to peripherals and communication modules. Each connection occurs through a port whose contract specifies functionality, timing, and error behavior. Yim et~al. report that "standardized connectors permit dynamic reassembly" \cite{Yim2007}; our port contracts extend this principle beyond mechanics to electronics and software. The resulting architecture respects boundaries between mechanics, power, electronics, and software, yet provides explicit seams where behaviours and communication strategies can be swapped. The system therefore evolves through adaptation rather than overhaul.
+
+\begin{figure}[H]
+  \centering
+  \fbox{\rule{0pt}{2in} \rule{3in}{0pt}}
+  \caption{System diagram composing mechanical, circuit, microcontroller, and peripheral hexagons.}
+  \label{fig:system_composition}
+\end{figure}
+
+\section{Discussion}
+The project began with a challenge common to many robotics efforts: how to scale and version hardware and software without
+entangling mechanical, power, and behavioural considerations. By framing each subsystem as a hexagon with contractual ports, we
+resolved this challenge. Mechanical modules could be replaced, circuit boards upgraded for current capacity, communication
+protocols switched, and peripherals added—all without cascading redesign. The hexagonal architecture thus operationalises the
+research goal of achieving modular, evolvable platforms across mechanical, electronic, power, and communication domains,
+demonstrating that the philosophy of ports and adapters extends naturally into robotics.
+
+\section*{Research Question and Hypothesis}
+\textbf{RQ1:} We surely need to develop a concept, or a philosophy that allows for scalability, versioning, and modularity of our platforms. This should extend to mechanical aspects, Software aspects, Electronics aspect, Power aspects, and communications and behavior aspects.\\
+\textbf{H1:} Hexagonal architecture widely used in software and databases, gives us a solid philosophy for isolating system, or platforms, into their own entity, while exposing ports to handle external entities, via adapters. Modifying this concept to our project's constraints and objectives should give us our intended philosophy.
+
