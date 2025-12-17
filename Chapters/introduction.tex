@@ -7,6 +7,45 @@ Together, these platforms are not merely products with predefined applications; 
 
 This thesis documents the philosophy, problematic, design, implementation, and evaluation of these platforms, demonstrating how a modular approach can address a variety of challenges in robotics. It presents the theoretical foundations of modular design, details the system architecture, and evaluates the platforms through experimental testing. Ultimately, the work illustrates how such adaptable solutions can serve as universal products, empowering users to explore innovative applications in research, education, and beyond.
 
+\section{Overview of Robotics}
+Robotics is an interdisciplinary field that has evolved from simple automation to the development of complex systems with autonomous decision-making capabilities. This evolution is driven by:
+\begin{itemize}
+	\item \textbf{Sensor and Actuator Advances:} Modern robots leverage cutting-edge sensors and actuators that provide high-resolution environmental data and precise control \cite{Craig2005,Siciliano2009}.
+	\item \textbf{Computational Power and Algorithms:} Enhanced processing capabilities and advanced algorithms, including machine learning and adaptive control, allow robots to perform real-time analysis and complex tasks.
+	\item \textbf{Modularity and Open-Source Development:} The trend toward modular design enables scalable, reconfigurable platforms that can be tailored for research, education, and even consumer applications. This paradigm shift facilitates collaborative development and rapid innovation.
+\end{itemize}
+
+Academic studies often address challenges such as system integration, sensor fusion, and the development of robust control algorithms. Foundational works by Siciliano \emph{et al.} \cite{Siciliano2009} and Craig \cite{Craig2005} have significantly influenced modern robotics by providing theoretical and practical insights that continue to shape the field.
+
+
+\section{Problematic}
+Despite extensive research in modular robotics, many existing platforms remain constrained by tightly coupled hardware designs, platform-specific software stacks, and limited interoperability between robotic systems. As a result, adapting a robot to new tasks often requires substantial redesign of both hardware and software, undermining the potential benefits of modularity.
+
+Additionally, current solutions frequently target a single class of robots or applications, such as self-reconfigurable robots or educational kits, without addressing the challenge of maintaining a unified development framework across ground, amphibious, and aerial robotic platforms. This fragmentation increases complexity for developers and limits the scalability of modular robotic ecosystems.
+
+The core problem addressed in this thesis is the lack of a unified modular robotics framework that enables reusable hardware and software modules to be seamlessly deployed across multiple heterogeneous robotic platforms while maintaining simplicity, flexibility, and performance.
+
+\section{Objective}
+The primary objective of this thesis is to design, implement, and validate a modular robotics platform that supports hardware and software reuse across multiple robotic systems with different operational requirements.\\
+
+The specific objectives are as follows:\\
+
+\textbf{Design modular robotic platforms capable of supporting interchangeable sensors, actuators, and peripherals.\\}
+
+\textbf{Develop a software architecture that enables plug-and-play functionality, dynamic configuration, and simplified debugging.\\}
+
+\textbf{Implement a unified controller and communication framework to abstract low-level hardware details.\\}
+
+\textbf{Validate the proposed modular approach through real-world robotic platforms operating in different environments and applications.\\}
+
+\section{Research Approach}
+The methodology of this thesis is built on the principles of abstraction and modularity. Rather than developing fixed-function systems, the focus is on creating versatile platforms with the following core components:
+\begin{itemize}
+	\item \textbf{Abstraction:} By decoupling hardware from software, the design allows for independent evolution and easy integration of new technologies.
+	\item \textbf{Modularity:} Systems are conceived as collections of interchangeable modules, enabling rapid prototyping, iterative testing, and scalability. This approach is supported by recent research on modular self-reconfigurable robots \cite{Yim2007}.
+	\item \textbf{Theory-Practice Integration:} Theoretical models, such as the kinematic formulations presented earlier, are used to inform design choices and are validated through extensive simulations and experiments.
+\end{itemize}
+
 \section{Introduction to Modularity in Robotic Systems}
 Modularity is a design philosophy that emphasizes constructing complex systems from smaller, self-contained components---commonly referred to as modules\footnote{Modules are discrete units of functionality that can be independently developed, tested, replaced, or upgraded.}. In the context of robotic platforms, this approach involves decomposing the system into discrete parts, each encapsulating specific functionalities such as sensing, actuation, communication, or processing, thereby simplifying design and troubleshooting.
 
@@ -26,40 +65,151 @@ From a development perspective, modularity supports a more agile workflow. It en
 Ultimately, adopting a modular approach in robotic platforms aligns perfectly with the goals of advancing research, fostering educational experiences, and enabling rapid prototyping. By leveraging the principles of modularity, developers can create adaptable and cost-effective platforms that meet the dynamic challenges of modern robotics.
 
 \section{Notion of platforms}
-Platforms can be considered a workspace that provides mechanical, electronic, software as well as energetic and power support for a project be it experimental or practical, but at the heart of this concept is "Abstraction", you don't need to understand how semiconductor or hardware works to work with an arduino for an instance, all you need is to be familiar with algorithms and programming; high level programming or even human language in our times of AI, no assembly or machine code anymore, but if you need to or want to go that low, it's still possible for you to do so, the arduino platform allows for all therefore:\\
-
-\textbf{Definition.} A \emph{platform} is a deliberately stable core together with explicit contracts that enable independent parties to create, combine, and evolve extensions and applications over time without modifying the core.
+Platforms can be considered a workspace that provides mechanical, electronic, software and power support for a project be it experimental or practical, but at the heart of this concept is "Abstraction", you don't need to understand how semiconductor or hardware works to work with an arduino for an instance, all you need is to be familiar with algorithms and programming; high level programming or even human language in our times of AI, no assembly or machine code anymore, but if you need to or want to go that low, it's still possible for you to do so, the arduino platform allows for all therefore a \emph{platform} is a deliberately stable core together with explicit contracts that enable independent parties to create, combine, and evolve extensions and applications over time without modifying the core.
 
 \subsection{Platform vs. Product, Toolkit, Framework, Ecosystem}
-% (Insert the comparison table here)
+\label{subsec:platform-comparison}
+The magic behind \textbf{\textit{ASCE}} platforms is that aside from being platforms, they may also behave as products, toolkits frameworks, and an ecosystem (Since they allow for cross platform and emergent behaviour).
+\begin{table}[H]
+	\centering
+	\caption{Platform vs. related constructs}
+	\renewcommand{\arraystretch}{1.15}
+	\begin{tabularx}{\textwidth}{lXXXX}
+		\toprule
+		\textbf{Construct} & \textbf{Core intent} & \textbf{Who extends it?} & \textbf{Interface stability} & \textbf{Typical deliverables} \\
+		\midrule
+		Product   & Solve a specific use case             & Vendor             & n/a           & Device/app with fixed features \\
+		Toolkit   & Provide parts to assemble             & End user           & Low--Medium   & Components, examples \\
+		Framework & Invert control; fill hooks            & Developer          & Medium--High  & Base code + callbacks \\
+		Ecosystem & Community of complements              & Many parties       & Mixed         & Marketplaces, standards \\
+		\textbf{Platform} & \textbf{Stable core + contracts for many products} & \textbf{First\&third parties} & \textbf{High (versioned)} & \textbf{Core, interfaces, SDKs, docs, governance} \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
 
-\subsection{Modular Robotic Platforms (MRP)}
-An MRP exposes mechanical, electrical, and software contracts for safe composition of actuators, sensors, power, and behaviors.\\
-"ASCE" platforms; what this thesis is about, follows an analogy: "if modularity is a universe, then our platforms allow freedom in both \textbf{space} and \textbf{time}"
+\subsection{Modular Robotic Platform (MRP)}
+Since we are developing platforms meant for versatility and ease of use, It is useful to "objectify" platforms and give them rules and features and compatibility constrains , let's call this object an "MRP" standing for "Modular Robotic Platform".\\
+ 
+An MRP exposes mechanical, electrical, and software contracts for safe composition of actuators, sensors, power, and behaviours, allowing the users the creation of "Assemblies" and conceptualizing them as fits their uses or ordering them from fabricators (Which is what our startup is about as will be shown later)\\
 
-\subsubsection{Space-Time Modularity}
-Space = discipline (mechanical, electronics, software, logic/UX). 
-Time = user maturity (consumer, learner, researcher, professional).
+MRPs also allow us to keep track of information such as weight of platforms, cost, and gather statistical data and feedback for further improvements and maturation of assemblies and their constituents.
+
+With all this said, a \emph{Modular Robotic Platform} (MRP) exposes mechanical, electrical, and software contracts for safe composition of actuators, sensors, power, and behaviors so that a wide range of robots can be built, upgraded, and repurposed without modifying the core.
+
+\subsection{Space-Time Modularity}\label{subsec:space-time}
+"ASCE" platforms; what this thesis is about; follows an analogy: "if modularity is a universe, then our platforms allow freedom in both \textbf{space} and \textbf{time}"
+
+Space is \emph{discipline} (mechanical, electronics, software, logic/UX). Time is \emph{user maturity} (consumer, learner, researcher, professional). A high-quality MRP provides variation points across space and growth paths across time as shown in the following table.
+
+
+\begin{table}[H]
+	\centering
+	\caption{ASCE Space--Time matrix of modularity}
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabularx}{\textwidth}{lXXXX}
+		\toprule
+		\textbf{Time $\downarrow$ / Space $\rightarrow$} & \textbf{Mechanical} & \textbf{Electronics} & \textbf{Software} & \textbf{Logic \& UX} \\
+		\midrule
+		Consumer & Prebuilt mounts; safe geometry & Pre-wired modules & App presets & One-click modes, arming rules \\
+		Learner & Parametric parts & Labeled harnesses; rails & Config files; examples & Guided labs, wizards \\
+		Researcher/Dev & Custom frames; CoG guidance & Swappable drivers; EMI budget & Ports/adapters; SDK & Tests, CI, telemetry \\
+		Professional & Optimized rigs; stiffness specs & Power tiers; fusing; connectors & RT guarantees; schedulers & Toolchains, HIL, certification hooks \\
+		\bottomrule
+	\end{tabularx}
+\end{table}
+
+according to this analogy, ASCE platforms essentially behaves as a platform for users and developers, we may keep expanding and building on top of solid concepts from these platforms, and users may use them to tackle their own problematic.
 
 \subsection{The ASCE Platform Family}
-% Formal tuple, shared philosophy, layers
+It is difficult to start with a single build (MRP) that is versatile enough to do everything in the field of robotics; be highly flexible and easy to use, operate across all environments (air,land,water), and offer manipulation means such as robotic arms and similar actuators, this could become a realizable target if we have multiple separate builds (MRPs) and unify them after their maturation under one platform or two, therefore initially we will go with the following list to cover all said domains:\\
+-Dronegaze: A drone test jig allowing the developement and testing aerial builds.\\
+-Bulky: A compact rover equipped with sensors for spatial interpretation.\\
+-The'gill: an amphebian build able to move both in terrain and water surfaces.\\
+-µTomba: a pedagogic breadboard based build suitable for learning and teaching.\\
+-ILITE: a universal controller, which is the most important element as it can be used to control any arbitrary configuration within our platform families or beyond.
 
-\subsection{Minimum Viable Platform (MVPf)}
-% 4 criteria list
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{"../../../archive/µTomba/Microtomba Evolite Basic Render 1"}
+	\caption[]{a 3D render of µTomba}
+	\label{fig:microtomba-evolite-basic-render-1}
+\end{figure}
 
-\subsection{Axioms and Criteria}
-% A1--A5 and testable criteria
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{../../../archive/Bulky/image}
+	\caption[]{Bulky alongside ILITE}
+	\label{fig:Bulky1}
+\end{figure}
 
-\subsection{Platform Layers for Embedded Robotics}
-% 8 layers list
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{../../../../Downloads/screenshot001}
+	\caption[]{a 3D render of The'Gill}
+	\label{fig:Thegill1}
+\end{figure}
 
-\subsection{Contract Template}
-% Per-interface template (IMU, ESC, Radio, etc.)
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{../../../../Downloads/screenshot002}
+	\caption[]{A 3D render of ILITE}
+	\label{fig:ILITE1}
+\end{figure}
 
-\subsection{Why ASCE is Different}
-% Matrix argument and thesis claim
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{../../../../Downloads/Dronegaze1}
+	\caption[]{A 3D render of Dronegaze test jig}
+	\label{fig:dronegaze1}
+\end{figure}
 
 
+\subsection{Minimum Viable Platform (MVP)}
+We define an "MVP" any valid MRP that is enough to serve as a platform for a specific use case; for instance a user may need a purely mobile platform to test out their movement and localisation algorithms for example, they don't need every other module or peripheral available, this would make an MVP. Less than an MVP would basically remain a set of components and modules. an MVP is essentially a MRP but without saturating \textbf{its module capacity}.
+
+\subsection{Platform Layers for Robotics}
+Robotic systems integrate diverse fields, each contributing unique methodologies and insights.
+
+\subsection{Mechanical Engineering}
+Mechanical engineering underpins the design and fabrication of the physical structure. Key considerations include:
+\begin{itemize}
+	\item \textbf{Structural and Material Analysis:} Techniques such as finite element analysis (FEA) assess the durability and performance of robot components.
+	\item \textbf{Mechanism Design:} Analyzing kinematic chains, joint configurations, and mobility mechanisms is essential for ensuring reliable operation under various conditions.
+\end{itemize}
+Classical texts, such as those by Spong \emph{et al.} \cite{Spong2006}, provide deep insights into these principles.
+
+\subsection{Electrical and Electronics Engineering}
+This discipline focuses on:
+\begin{itemize}
+	\item \textbf{Circuit and Sensor Integration:} Designing custom PCBs, interfacing diverse sensors, and ensuring efficient power management are critical, especially for platforms requiring long battery life.
+	\item \textbf{Signal Processing:} Filtering and interpreting sensor data to provide accurate feedback for control algorithms.
+\end{itemize}
+These topics are discussed extensively in foundational works like \cite{Craig2005}.
+
+\subsection{Computer Science and Control Theory}
+Software and control algorithms are the brain of robotic systems:
+\begin{itemize}
+	\item \textbf{Control Strategies:} The implementation of PID controllers, model predictive control (MPC), and adaptive algorithms enables stable and responsive behavior.
+	\item \textbf{Software Architectures:} Developing modular, scalable, and real-time software platforms is essential for integrating various subsystems. Open-source frameworks like ROS have revolutionized this integration.
+\end{itemize}
+For a comprehensive treatment, refer to \cite{Siciliano2009}.
+
+\subsection{Systems Engineering}
+Systems engineering ensures that all components operate harmoniously:
+\begin{itemize}
+	\item \textbf{Integration and Testing:} Systematic approaches for validating interoperability and performance are vital.
+	\item \textbf{Lifecycle Management:} Structured methodologies help manage the complexity of designing, developing, and deploying advanced robotic systems.
+\end{itemize}
+This holistic perspective is crucial for the successful implementation of modular and adaptable platforms.
+
+To have a valid MVP/MRP, abstracting the mentioned fields into layers is optimal. We need a ready mechanical build, alongside a control and power circuit, then software, therefore we have mostly 3 critical layers:\\
+\textbf{-Mechanical layer.}\\
+\textbf{-Electronic Layer.}\\
+\textbf{-Software layer.}\\
+Our platform should provide these 3 layers as well as allow the customization and interchangeability of these elements when possible.
+
+\section{Conclusion}
+This chapter has established a superficial robotics foundation for the thesis. By exploring, the interdisciplinary framework that supports tinkering and development, the groundwork has been laid for the subsequent chapters. The next sections will build on these concepts by detailing the design, implementation, and experimental validation of the modular robotic platforms, thereby contributing to the evolution of accessible and adaptable robotics.
 
 %ASCE Platforms is intedned to be a very modular platform that allows the users to customize the robots according to applications, this is by providing components at request.
 

@@ -1,16 +1,88 @@
-\chapter{Discovery and pairing system:}
-\label{chap:discovery}
+\chapter{Realization of a Modular Robotic Platform}
 
-We've already established that our notion of "generalized platforms" implies cross-platform functionlaity, we need us an "on-platform" system that can identify other pair-able platforms nearby/from the cloud, their types, fetch their characteristics and parameters and give the user the ability to exploit such features. How can we go on about such a system?
+\section{From Principles to Practical Implementation}
 
-We could initially develop our own physical link, protocol and system, or we can use something cheap and robust and already well documented such as ESP-NOW, since most of our robots are ESP32 based or incorporate ESP32 for connectivity, this makes it the perfect choice. ESP-NOW should give us a ready to use physical link and protocol, and all is left for us to develop is the pairing system and identification system, which is mostly software after we make the boards on BULKY and THEGILL self identify the plugged in peripherals, and Microtomba and others being breadboard based and manually configured, we can implement such system on every platform but with different interfaces, where we have a UI we can control behaviours from the robot itself such the case of BULKY, or we can use a controller for such behaviours too such is the case with ILITE, we can make all intercommunicate to create synergy or emergeant behaviour or a hive system, let's call it ASCE OPENswarm system, this would raise certain concerns like safety of operation, how do we detect unsafe scenarios and raise an exception to the user ? how do we make certain features apply to only a certain combination of platforms ? so on so on.
+The preceding chapters established the mechanical, electronic, and software foundations required to support a Modular Robotic Platform (MRP). This chapter demonstrates how these principles are applied in practice to realize complete, configurable robotic systems. Rather than treating modularity as a purely conceptual goal, the MRP framework introduced in this thesis is operationalized through formal component descriptions, compatibility criteria, and supporting software tools.
 
-%note on the design, architecture, diagram and philosophy of such system
-%note on how we will implement it differently
-%note on the software implementation
-%note on the user experience and interface and safety
-%add diagram behind philosophy
-%add technical diagram
-%refer to code
-%add experiments
-%add discussion
+The objective of this chapter is to show how MRPs can be constructed, customized, deployed, and evolved using the concepts introduced earlier.
+
+\section{Component Registration and Attribute Modeling}
+
+At the core of the MRP concept is the notion of explicitly registered components. Each hardware or software component is described using a set of attributes that characterize its capabilities and constraints. Typical attributes include:
+
+\begin{itemize}
+	\item Mechanical properties (dimensions, weight, mounting interface)
+	\item Electrical characteristics (operating voltage, current consumption)
+	\item Interface requirements (digital I/O, analog inputs, communication protocols)
+	\item Software dependencies (drivers, services, configuration parameters)
+\end{itemize}
+
+By modeling components in this structured manner, it becomes possible to reason about compatibility and system composition without relying on ad-hoc integration decisions.
+
+\section{Compatibility Criteria and System Composition}
+
+Compatibility between components is determined by a set of explicit criteria. These criteria include:
+
+\begin{itemize}
+	\item \textbf{Mechanical compatibility:} availability of mounting adapters, load limits, and spatial constraints.
+	\item \textbf{Electrical compatibility:} power budget, voltage levels, and connector availability.
+	\item \textbf{Interface compatibility:} sufficient digital or analog I/O, or support for required communication protocols.
+	\item \textbf{Software compatibility:} availability of drivers and framework-level abstractions.
+\end{itemize}
+
+Using these criteria, a platform configuration can be validated as either a Minimum Viable Platform (MVP) or a complete Modular Robotic Platform (MRP). This validation process ensures that assembled systems are functional, safe, and aligned with user requirements.
+
+\section{Platform Builder System}
+
+The formalization of components and compatibility rules enabled the development of a \textit{platform builder} system. This system allows users to configure custom robotic platforms by selecting components within defined constraints.
+
+The platform builder was later implemented as part of an online shop website, enabling users to:
+\begin{itemize}
+	\item Assemble custom platforms starting from minimal MVP configurations.
+	\item Select from predefined MRP configurations optimized for common use cases.
+	\item Customize platforms based on payload, sensing, actuation, and control needs.
+\end{itemize}
+
+This approach bridges engineering design with practical deployment, making modular robotics accessible to users without requiring deep technical expertise.
+
+\section{Software Tooling for Platform Interaction}
+
+Beyond hardware composition, software criteria play a crucial role in realizing MRPs. Dedicated software tools were developed to assist users in interfacing with their platforms, configuring behavior, and tuning control systems.
+
+Examples include:
+\begin{itemize}
+	\item An inverse kinematics solver for the Mech'Iane robotic arm, enabling intuitive motion control.
+	\item A telemetry and tuning interface for the Dronegaze platform, allowing users to visualize system states and adjust PID parameters in real time.
+\end{itemize}
+
+These tools were implemented using high-level environments such as Processing, emphasizing rapid development and user accessibility while interfacing with the underlying embedded systems.
+
+\section{Feedback-Driven Platform Evolution}
+
+MVP and MRP configurations generated through the platform builder and user deployments serve as valuable feedback data. By analyzing component usage, configuration patterns, and user behavior, insights can be gathered regarding demand, common use cases, and platform limitations.
+
+This data-driven approach supports efficient platform maturation by:
+\begin{itemize}
+	\item Guiding hardware revisions and documentation efforts.
+	\item Identifying high-value modules and underutilized components.
+	\item Informing future software and framework improvements.
+\end{itemize}
+
+Such feedback loops are essential for evolving modular platforms in a controlled and sustainable manner.
+
+\section{User-Driven Platform Creation with ILITE}
+
+The ILITE controller plays a central role in enabling user-driven MRP creation. By exposing stable software interfaces through the ASCE framework, ILITE allows users to define custom platforms without managing low-level communication, scheduling, or hardware intricacies.
+
+This capability empowers ILITE owners to:
+\begin{itemize}
+	\item Create new MRPs tailored to specific applications.
+	\item Extend existing platforms with additional modules.
+	\item Experiment with novel configurations while relying on a stable backend.
+\end{itemize}
+
+In this way, ILITE functions not merely as a controller, but as a gateway to modular platform development.
+
+\section{Chapter Summary}
+
+This chapter demonstrated how the theoretical concepts introduced throughout the thesis are applied to realize practical Modular Robotic Platforms. By formalizing components, defining compatibility criteria, and supporting customization through software tools and services, the MRP concept is shown to be viable in real-world deployment. The resulting ecosystem enables scalable, user-driven platform creation and continuous evolution, setting the stage for the concluding discussion of contributions and future work.

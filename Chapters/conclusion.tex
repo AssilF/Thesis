@@ -1,1 +1,29 @@
 \chapter*{ General conclusion}
+
+This thesis explored the design, implementation, and practical realization of modular robotic platforms with the objective of improving adaptability, scalability, and accessibility in robotics development. By combining mechanical, electronic, and software abstractions into a unified framework, the work demonstrates that modularity can be effectively applied beyond theoretical constructs and realized in functional, deployable systems.\\
+
+The primary outcome of this work is the definition and validation of the Modular Robotic Platform (MRP) concept. Through the development of multiple robotic platforms; ranging from educational and breadboard-based systems to mechanically and electronically sophisticated robots—the thesis shows that modularity can be achieved consistently across heterogeneous domains.\\
+
+On the mechanical level, standardized mounting strategies and reusable structural elements enabled platforms to be reconfigured and extended without redesigning the core structure. Electronically, the use of widely available components, scalable power architectures, and flexible input/output expansion techniques supported both rapid prototyping and robust operation. On the software side, a layered architecture built on C++, PlatformIO, the Arduino framework, and FreeRTOS enabled portability, abstraction, and concurrency while maintaining accessibility for users with varying levels of expertise.\\
+
+The introduction of the ASCE framework and the ILITE controller further unified these layers by abstracting platform-specific details and exposing stable interfaces for application development. This allowed users to focus on behavior and experimentation rather than low-level implementation, reinforcing the MVP-to-MRP maturation path.\\
+
+Beyond technical implementation, the thesis demonstrated practical deployment through a platform builder system and associated software tools. These systems enabled users to customize and order platforms, interact with them through dedicated interfaces, and provide feedback that informed iterative platform improvement. Together, these results validate the feasibility and usefulness of the proposed modular robotics approach.
+
+Despite the progress achieved, several limitations remain. The modularity introduced in this thesis relies on well-defined contracts and abstractions, which inherently introduce some overhead compared to highly optimized, single-purpose robotic systems. In performance-critical applications, this abstraction cost may limit achievable efficiency.\\
+
+Additionally, while the platforms support a wide range of configurations, mechanical and electronic compatibility still depends on the availability of suitable adapters and interface modules. Expanding the ecosystem of standardized modules remains an ongoing challenge.\\
+
+From a software perspective, reliance on high-level frameworks such as Arduino simplifies development but can obscure low-level behavior and limit fine-grained control in certain scenarios. Although access to lower layers is possible, it requires additional expertise and careful design to avoid breaking abstraction boundaries.\\
+
+Finally, experimental validation in this work focused on functional feasibility and integration rather than exhaustive quantitative benchmarking. More systematic performance evaluations would be required to compare the proposed platforms directly against industrial or research-grade systems.\\
+
+Several directions for future work naturally emerge from this thesis. Mechanically, further standardization of interfaces and the development of additional modular adapters would enhance interoperability and ease of assembly. Electrically, integrating more advanced power management and monitoring features could improve efficiency and reliability in complex configurations.\\
+
+On the software side, extending the ASCE framework with additional services, formal configuration schemas, and automated validation tools would strengthen platform robustness. Deeper integration of simulation and digital twin approaches could also facilitate design exploration and testing prior to physical deployment.\\
+
+From a systems perspective, expanding data collection from MVP and MRP deployments offers opportunities for data-driven platform evolution. Analyzing usage patterns, failure modes, and user behavior can guide future design decisions and documentation efforts.\\
+
+Ultimately, the concepts presented in this thesis lay the groundwork for a continuously evolving modular robotics ecosystem. By lowering barriers to entry while preserving extensibility and rigor, the proposed approach has the potential to support research, education, and experimentation in parallel with industrial developments.\\
+
+This work demonstrates that modularity, when treated as a first-class design principle and supported by appropriate abstractions, can transform how robotic systems are developed and used. The Modular Robotic Platform concept presented in this thesis represents a step toward more adaptable, user-driven, and sustainable robotics, providing a foundation upon which future innovation can build.

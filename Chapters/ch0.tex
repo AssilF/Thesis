@@ -1,214 +1,72 @@
-\chapter{Defining Platforms}\label{chap\:defining-platforms}
-\section{Platform: Working Definition}\label{sec\:platform-definition}
-A \emph{platform} is a deliberately stable core together with explicit contracts that enable independent parties to create, combine, and evolve extensions and applications over time without modifying the core.
+\chapter{Mechanical foundations}
+\section{Role of Mechanical Design in Modular Robotic Platforms}
 
-Formally, we define a platform as the 5-tuple
-\begin{equation}
-\mathcal{P} = \langle \mathcal{C},; \Gamma,; \mathcal{E},; \mathcal{T},; \mathcal{G} \rangle,
-\end{equation}
-where $\mathcal{C}$ is the core, $\Gamma$ are the contracts (interfaces and guarantees), $\mathcal{E}$ are extensions, $\mathcal{T}$ are the tools, and $\mathcal{G}$ is governance.\\
+In a Modular Robotic Platform (MRP), mechanical design plays a fundamental role in enabling reusability, adaptability, and scalability. Unlike monolithic robotic systems, where mechanical components are tightly coupled to a single application, an MRP must support frequent reconfiguration while maintaining structural integrity and functional reliability.
 
-These notions are commonly used in software design and computer science but we can apply the same philosophies behind them in our field of interest; robotics. 
+The mechanical layer provides the physical substrate upon which electronic and software modules operate. Therefore, mechanical interfaces must be standardized, robust, and flexible enough to accommodate heterogeneous components such as sensors, actuators, power systems, and auxiliary structures. In the context of the ASCE platform family, mechanical modularity is treated as a first-class design constraint rather than a secondary optimization.
 
-\section{Origin of context}
+\section{Design Principles for Mechanical Modularity}
 
-The notion of a \emph{stable core with explicit contracts} emerges from three converging streams. First, modular design and information hiding established that software should be decomposed so that each module encapsulates design decisions behind stable interfaces, allowing implementations to vary without ripple effects \cite{parnas1972}. Second, \emph{Design by Contract} made those interface expectations explicit as preconditions, postconditions, and invariants, turning ``interfaces'' into formal \emph{contracts} between components \cite{meyer1992}. 
+The mechanical foundations of the proposed platforms are guided by the following principles:
 
-As software systems turned into industry platforms, researchers described architectures with a \emph{core} and a \emph{periphery of complements}, where the core's stability and the clarity of its interfaces enable independent evolution of complements. This core-complement view connects technical modularity to economic ecosystems and governance, giving a unified lens for platform design \cite{baldwin2009platforms}. 
+\subsection{Reusability}
 
-In practice, the software-architecture community operationalized the idea through patterns such as the Hexagonal (Ports \& Adapters) Architecture: keep application logic independent of technology details, expose \emph{ports} as stable contracts, and attach \emph{adapters} for specific UIs, devices, or protocols. This preserves the core while enabling rapid replacement or addition of peripherals \cite{cockburn2005hexagonal}. 
+Mechanical parts are designed to be reused across multiple robotic platforms whenever possible. Mounting patterns, enclosure dimensions, and structural elements follow repeatable geometries, allowing components to migrate between different MRPs without redesign.
 
-Management and IS scholarship then integrated architecture with strategy and governance: how a platform owner maintains core stability, versioning, and compatibility while orchestrating third-party innovation. This literature articulates how interface design, API policies, and deprecation rules shape ecosystem health, providing the governance scaffolding that complements the technical contracts \cite{gawer2002platformleadership,tiwana2014platformecosystems}. 
+\subsection{Standardized Interfaces}
 
-Taken together, these threads justify the dissertation's framing: a platform is a deliberately stable core with explicit, versioned contracts that empower independent parties to create and evolve extensions over time, without modifying that core or building on top of it. This "core" may be rigid and not as flexible outside intended use cases, but we can add that missing dimension by making it "Modular"; the core is merely a solid kernel that allows for a huge variety of stock or third party modules (or adapters in the sense of hexagonal architecture) to plug in, letting the users shape it as they please (Spacetime liberty!).
+Standard mechanical interfaces, such as mounting holes, brackets, and rails, enable consistent attachment of modules. This standardization reduces integration time and minimizes the risk of incompatibility during reconfiguration.
 
-\subsection{Platform vs. Product, Toolkit, Framework, Ecosystem}\label{subsec:platform-comparison}
-The magic behind \textbf{\textit{ASCE}} platforms is that aside from being platforms, they may also behave as products, toolkits frameworks, and an ecosystem (Since modularity and hexagonal architecture philosophies allow for cross platform and emergent behavior).
-\begin{table}[h]
-\centering
-\caption{Platform vs. related constructs}
-\renewcommand{\arraystretch}{1.15}
-\begin{tabularx}{\textwidth}{lXXXX}
-\toprule
-\textbf{Construct} & \textbf{Core intent} & \textbf{Who extends it?} & \textbf{Interface stability} & \textbf{Typical deliverables} \\
-\midrule
-Product   & Solve a specific use case             & Vendor             & n/a           & Device/app with fixed features \\
-Toolkit   & Provide parts to assemble             & End user           & Low--Medium   & Components, examples \\
-Framework & Invert control; fill hooks            & Developer          & Medium--High  & Base code + callbacks \\
-Ecosystem & Community of complements              & Many parties       & Mixed         & Marketplaces, standards \\
-\textbf{Platform} & \textbf{Stable core + contracts for many products} & \textbf{First\&third parties} & \textbf{High (versioned)} & \textbf{Core, interfaces, SDKs, docs, governance} \\
-\bottomrule
-\end{tabularx}
-\end{table}
+\subsection{Structural Safety and Load Distribution}
 
-\section{Modular Robotic Platforms (MRP)}\label{sec:mrp}
-A \emph{Modular Robotic Platform} (MRP) exposes mechanical, electrical, and software contracts for safe composition of actuators, sensors, power, and behaviors so that a wide range of robots can be built, upgraded, and repurposed without modifying the core.
+While modularity favors flexibility, mechanical safety remains critical. Load-bearing elements are designed to withstand worst-case operating conditions, and mass distribution is carefully considered to preserve stability and maneuverability across different configurations.
 
-\subsection{Space-Time Modularity}\label{subsec:space-time}
-Space is \emph{discipline} (mechanical, electronics, software, logic/UX). Time is \emph{user maturity} (consumer, learner, researcher, professional). A high-quality MRP provides variation points across space and growth paths across time.
+\subsection{Scalability}
 
-\begin{table}[H]
-\centering
-\caption{ASCE Space--Time matrix of modularity}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\textwidth}{lXXXX}
-\toprule
-\textbf{Time $\downarrow$ / Space $\rightarrow$} & \textbf{Mechanical} & \textbf{Electronics} & \textbf{Software} & \textbf{Logic \& UX} \\
-\midrule
-Consumer & Prebuilt mounts; safe geometry & Pre-wired modules & App presets & One-click modes, arming rules \\
-Learner & Parametric parts & Labeled harnesses; rails & Config files; examples & Guided labs, wizards \\
-Researcher/Dev & Custom frames; CoG guidance & Swappable drivers; EMI budget & Ports/adapters; SDK & Tests, CI, telemetry \\
-Professional & Optimized rigs; stiffness specs & Power tiers; fusing; connectors & RT guarantees; schedulers & Toolchains, HIL, certification hooks \\
-\bottomrule
-\end{tabularx}
-\end{table}
+Mechanical designs allow incremental expansion. Additional modules can be mounted without altering the core structure, ensuring that the platform can evolve alongside user requirements.
 
-\section{Minimum Viable Platform (MVPf)}\label{sec:mvpf}
-A \emph{Minimum Viable Platform} requires: (1) a stable, versioned contract with at least one extension point per relevant layer; (2) two distinct realizations exercising the contracts; (3) tooling to build/test/document extensions; and (4) governance for compatibility and deprecation.
+\section{Mechanical Interfaces and Mounting Strategy}
 
-\begin{table}[h]
-\centering
-\caption{MVPf checklist (evidence at submission time)}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\textwidth}{lX}
-\toprule
-\textbf{Criterion} & \textbf{Evidence artifact} \\
-\midrule
-Stable contract(s) & Interface spec (versioned), timing/error semantics, unit tests \\
-Two realizations & e.g., Drone + Line-follower reusing core; alternate IMU/ESC drivers \\
-Tooling & Templates, CI, documentation, simulator/HIL scripts \\
-Governance & SemVer policy, compatibility matrix, deprecation schedule \\
-\bottomrule
-\end{tabularx}
-\end{table}
+To support modular assembly, the platforms adopt a layered mechanical interface strategy:
 
-\section{ASCE Contracts (Selected)}\label{sec:contracts}
-This section provides concise, testable contract specifications for three key ports. Each contract includes functional semantics, timing, error model, and compliance tests. Versions use semantic versioning (e.g., \texttt{imu.v2}).
+Primary structural frame: Provides rigidity and defines the robot’s main geometry.
 
-\subsection{IMU Port (\texttt{imu.v2})}\label{subsec:imu-contract}
-\begin{description}
-\item[Identifier \& Version] \texttt{imu.v2}.
-\item[Functional Semantics] Provide linear acceleration $(a\_x,a\_y,a\_z)$ in $\mathrm{m/s^2}$ and angular velocity $(\omega\_x,\omega\_y,\omega\_z)$ in $\mathrm{rad/s}$; right-handed body frame; timestamps in microseconds since boot.
-\item[Sampling] Required supported rates: {100, 200, 400} Hz; default 200 Hz. Report actual rate via \texttt{sampleRateHz()}.
-\item[Timing Contract] End-to-end latency (sensor read $\rightarrow$ consumer) $< 2$ ms (typ.), jitter $< 500$ $\mu$s (95th percentile) at 200 Hz.
-\item[Calibration] Bias/scale persisted via Store port; soft-iron/hard-iron optional; expose \texttt{setCalibration()} and \texttt{getCalibration()}.
-\item[Error Model] Health states: \texttt{OK}, \texttt{DEGRADED} (auto-retrying), \texttt{FAILED} (requires reinit); provide error codes and backoff policy.
-\item[Power/EMI] 3.3V logic; I\textsuperscript{2}C or SPI; max I\textsuperscript{2}C clock 400 kHz; bus hang recovery via clock stretching up to 9 pulses.
-\item[Security/Integrity] Optional CRC in SPI; sequence counters for drop detection in DMA pipelines.
-\item[Compliance Tests] (i) rate conformance; (ii) unit/axis sign tests; (iii) jitter histogram under CPU load; (iv) power brownout recovery; (v) hot-swap detection (if bus supports it).
-\end{description}
+Secondary mounting zones: Dedicated areas for sensors, actuators, and peripherals.
 
-\subsection{ESC Port (\texttt{esc.v1})}\label{subsec:esc-contract}
-\begin{description}
-\item[Identifier \& Version] \texttt{esc.v1}.
-\item[Functional Semantics] Command normalized throttle $u\in[0,1]$; monotonic mapping to PWM or DSHOT. Provide \texttt{arm()}, \texttt{disarm()}, \texttt{write(u)}, \texttt{stop()}.
-\item[Timing Contract] Update at 400 Hz (min). Command-to-output latency $<1$ ms typ.; report \texttt{lastWriteTime()}.
-\item[Safety] Disarmed default; loss-of-signal watchdog $<50$ ms; min/max clamps; ramp-rate limits configurable.
-\item[Error Model] \texttt{OK}, \texttt{TIMEOUT}, \texttt{BUS\_ERROR}, \texttt{OVERCURRENT} (if telemetried). Failsafe maps to \texttt{stop()}.
-\item[Electrical] 3.3V PWM or digital protocol (e.g., DSHOT600); shared ground; specify rise/fall constraints for LEDC or timer units.
-\item[Compliance Tests] (i) monotonicity sweep; (ii) timing scope traces; (iii) watchdog trip; (iv) arming sequence; (v) ramp-rate bound check.
-\end{description}
+Payload regions: Reserved volumes for experimental or user-defined modules.
 
-\subsection{Radio Port (\texttt{radio.v1})}\label{subsec:radio-contract}
-\begin{description}
-\item[Identifier \& Version] \texttt{radio.v1}.
-\item[Functional Semantics] Bidirectional datagrams with topics (e.g., \texttt{rc/*}, \texttt{telemetry/*}). Provide \texttt{publish(topic, payload)} and \texttt{subscribe(topic, handler)}.
-\item[Timing Contract] Control path latency $<20$ ms one-way (95th percentile). Provide \texttt{rssi()} and link \texttt{quality()}.
-\item[Error Model] Retries with exponential backoff; duplicate filtering via sequence numbers. Health: \texttt{OK}, \texttt{DEGRADED}, \texttt{DISCONNECTED}.
-\item[Security] Optional pairing with nonce; packet authentication (HMAC) optional but recommended for professional tier.
-\item[Compliance Tests] (i) range vs. latency curves; (ii) packet loss under interference; (iii) reconnect times; (iv) topic throughput fairness.
-\end{description}
+Mounting strategies emphasize accessibility and reversibility, enabling users to assemble, disassemble, and modify configurations with minimal tools. This approach aligns with the MRP objective of rapid prototyping and iterative development.
 
-\section{Proof by Substitution: Swapping IMUs in Drongaz}\label{sec:proof-substitution-imu}
-This section demonstrates that ASCE's ports \& adapters architecture allows replacing one IMU with another without changing the core (controllers, estimator, mixer, or telemetry schema).
+\section{Platform-Specific Mechanical Implementations}
 
-\subsection{Port Interface (stable)}
-\noindent\textbf{C++ Interface (header):}
-\begin{lstlisting}[language=C++]
-// Port: Imu (imu.v2)
-struct ImuSample {
-uint64\_t t\_us; // timestamp (us since boot)
-float ax, ay, az;   // m/s^2
-float gx, gy, gz;   // rad/s
-};
+Although each platform targets different operational environments, all share the same modular mechanical philosophy.
 
-enum class Health { OK, DEGRADED, FAILED };
+\subsection{uTomba}
 
-class Imu {
-public:
-virtual \~Imu() {}
-virtual bool begin() = 0;
-virtual bool read(ImuSample& out) = 0; // non-blocking; returns false if no new sample
-virtual float sampleRateHz() const = 0;
-virtual Health health() const = 0;
-};
-\end{lstlisting}
+uTomba adopts a minimalistic mechanical structure designed to prioritize accessibility and learning. The use of a breadboard-based layout eliminates rigid enclosure constraints, allowing users to physically interact with components and explore alternative configurations. This mechanical openness supports rapid experimentation and educational use while still maintaining a coherent platform identity.
 
-\subsection{Two Adapters (variable)}
-\noindent\textbf{Adapter A:} \texttt{Mpu6050Imu} implements \texttt{Imu} over I\textsuperscript{2}C.\\
-\textbf{Adapter B:} \texttt{Icm20948Imu} implements \texttt{Imu} over SPI.
+\subsection{Bulky}
 
-\begin{lstlisting}[language=C++]
-class Mpu6050Imu : public Imu { /\* ... */ };
-class Icm20948Imu : public Imu { /* ... \*/ };
-\end{lstlisting}
+Bulky is designed as a compact terrestrial rover with an emphasis on sensor and actuator expandability. Its chassis integrates multiple mounting points for ultrasonic arrays, cameras, manipulators, and auxiliary modules. The mechanical design balances compactness with flexibility, enabling Bulky to operate both as a standalone system and as a peripheral-driven slave platform controlled by external computation units.
 
-\subsection{Dependency Injection into the Core}
-The estimator depends only on the \texttt{Imu} port.
-\begin{lstlisting}[language=C++]
-class Estimator {
-Imu& imu;
-public:
-explicit Estimator(Imu& ref) : imu(ref) {}
-void tick() {
-ImuSample s; if (imu.read(s)) { /\* predict-update using s \*/ }
-}
-};
-\end{lstlisting}
+\subsection{Thegill}
 
-\subsection{Build-Time Swap (no core edits)}
-\begin{lstlisting}[language=C++]
-// main.cpp (composition root)
-\#ifdef USE\_ICM20948
-static Icm20948Imu imu;
-\#else
-static Mpu6050Imu imu;
-\#endif
-static Estimator estimator(imu);
-\end{lstlisting}
+Thegill extends mechanical modularity into amphibious environments. Its structure is engineered to support both terrestrial locomotion and aquatic propulsion while maintaining compatibility with additional systems such as robotic arms. Special consideration is given to sealing, buoyancy, and power routing, ensuring that modular components can be integrated without compromising environmental resilience.
 
-\subsection{Run-Time Swap via Factory (still no core edits)}
-\begin{lstlisting}[language=C++]
-// config.json (deployed via Store port)
-// { "imu": { "driver": "icm20948", "rate\_hz": 400 } }
+\subsection{Dronegaze}
 
-std::unique\_ptr<Imu> makeImu(const Config& cfg) {
-if (cfg.imu.driver == "icm20948") return std::make\_unique<Icm20948Imu>(cfg);
-if (cfg.imu.driver == "mpu6050")  return std::make\_unique<Mpu6050Imu>(cfg);
-return nullptr; // TODO: handle error
-}
-\end{lstlisting}
+Dronegaze is conceived as a modular aerial test platform rather than a conventional flight-ready drone. Its mechanical design prioritizes safety and accessibility, functioning as a test jig that allows controlled experimentation with propellers, frames, and control parameters. This setup enables rapid validation of aerodynamic and control hypotheses while preserving reusability of components.
 
-\subsection{Invariants Preserved}
-\begin{itemize}
-\item Telemetry schema (units, axes, timestamps) unchanged (consumer code unaffected).
-\item Controllers/mixer unaffected; only \texttt{Imu} adapter swapped.
-\item RTOS task graph unchanged; timing contract verified against \texttt{imu.v2} tests.
-\item No edits to core files (e.g., \texttt{FlightCore}, \texttt{Controllers}, \texttt{Mixer}, \texttt{Telemetry}).
-\end{itemize}
+\subsection{ILITE}
 
-\section{Contract Template (for New Ports)}\label{sec:contract-template}
-Use the following template when specifying additional ports (e.g., \texttt{clock.v1}, \texttt{telemetry.v1}, \texttt{store.v1}).
+ILITE's mechanical design is meant to serve as a drop resistant ergonomic model, easy on the hands and satisfying controls and feedback, with buttons and encoders accessible and long lasting, and for the least; aesthetically sound with ability to create multiple colour and style variants.
 
-\begin{enumerate}
-\item \textbf{Identifier \& Version}: \texttt{<name>.v<major>}.
-\item \textbf{Functional Semantics}: Inputs/outputs, coordinate frames, units, lifecycle.
-\item \textbf{Timing Contract}: Rates, latency/jitter bounds, concurrency model, buffering.
-\item \textbf{Error Model}: Health states, error categories, retry/backoff, degradation behavior.
-\item \textbf{Safety}: Failsafe states, watchdogs, arming/disarming, clamping.
-\item \textbf{Electrical/Mechanical (if applicable)}: Voltage/current, connectors, mounting patterns.
-\item \textbf{Security/Integrity}: Auth, sequence numbers, CRCs, tamper evidence.
-\item \textbf{Compliance Tests}: Automated checks, HIL procedures, acceptance thresholds.
-\item \textbf{Deprecation Policy}: Compatibility window and migration notes.
-\end{enumerate}
+\section{Mechanical Modularity and MRP Validation}
 
+Across all platforms, mechanical modularity enables the creation of multiple valid configurations that satisfy the criteria of an MRP or MVP. By reusing structural elements, adapters, mounting standards, and design principles, the platforms demonstrate that mechanical abstraction can coexist with domain-specific optimization.
+
+This approach validates the mechanical layer of the MRP concept by showing that diverse robotic systems; terrestrial, amphibious, aerial, and educational; can be derived from unique or shared mechanical foundations without sacrificing functionality or safety.
+
+\section{Conclusion}
+
+This chapter presented the mechanical foundations of the proposed modular robotic platforms. By outlining key design principles, standardized interfaces, and platform-specific implementations, it has been shown that mechanical modularity provides a robust basis for reconfigurable robotic systems. These foundations enable the seamless integration of electronic and software layers, which are explored in the following chapter.

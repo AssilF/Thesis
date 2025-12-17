@@ -1,99 +1,170 @@
-\chapter{Foundational Concepts in Robotics, Kinematics, and Interdisciplinary Integration}
-\label{chap:foundations}
-\res{This chapter isn't finalized, it's me trying to imagine an initial structure to be edited over time, I am not sure if I should provide superficial insights on robotics to put the reader of this thesis on the same page with me as I document my work more in following chapters, or if I should dive deeper into each part of each chapter which will result in a very rich yet a long thesis which may not even be read in the end}
+\chapter{Electronic Foundation}
+\section{Role of Electronics in a Modular Robotic Platform}
 
-This chapter establishes a rigorous theoretical framework for the work presented in this thesis. It delves into advanced kinematic models, surveys the multidisciplinary nature of robotics, and outlines the research methodology grounded in abstraction and modularity. The discussion is supported by key academic references and mathematical formulations, setting the stage for the detailed design and experimental work in later chapters.
+In a Modular Robotic Platform (MRP), the electronic layer acts as the interface between mechanical structures and software logic. It is responsible for power distribution, signal acquisition, actuation, communication, and user interaction. In contrast to monolithic robotic systems, modular platforms must tolerate frequent reconfiguration, heterogeneous peripherals, and evolving performance requirements without requiring redesign of the core electronics.
 
-\section{Overview of Robotics}
-Robotics is an interdisciplinary field that has evolved from simple automation to the development of complex systems with autonomous decision-making capabilities. This evolution is driven by:
+The electronic architecture presented in this thesis emphasizes abstraction, reuse, and robustness. By relying on widely available components, standardized signaling protocols, and scalable microcontroller architectures, the platforms achieve electronic modularity across diverse robotic systems.
+
+\section{Power Architecture and Energy Storage}
+
+\subsection{Battery Technologies}
+
+Mobile robotic platforms require compact, high-energy-density power sources. Two battery chemistries are employed:
+
 \begin{itemize}
-    \item \textbf{Sensor and Actuator Advances:} Modern robots leverage cutting-edge sensors and actuators that provide high-resolution environmental data and precise control \cite{Craig2005,Siciliano2009}.
-    \item \textbf{Computational Power and Algorithms:} Enhanced processing capabilities and advanced algorithms, including machine learning and adaptive control, allow robots to perform real-time analysis and complex tasks.
-    \item \textbf{Modularity and Open-Source Development:} The trend toward modular design enables scalable, reconfigurable platforms that can be tailored for research, education, and even consumer applications. This paradigm shift facilitates collaborative development and rapid innovation.
+	\item \textbf{Lithium-Ion (Li-Ion):} Used where mechanical robustness, stable discharge, and long cycle life are required.
+	\item \textbf{Lithium Polymer (LiPo):} Selected for applications requiring high discharge rates and flexible form factors, such as mobile and aerial platforms.
 \end{itemize}
 
-Academic studies often address challenges such as system integration, sensor fusion, and the development of robust control algorithms. Foundational works by Siciliano \emph{et al.} \cite{Siciliano2009} and Craig \cite{Craig2005} have significantly influenced modern robotics by providing theoretical and practical insights that continue to shape the field.
+Both battery types are widely adopted in robotics and embedded systems due to their favorable energy-to-weight ratios \cite{horowitz2015}.
 
-\section{Fundamentals of Kinematics in Robotics}
-Kinematics is central to understanding and controlling the motion of robotic systems. This section presents detailed models for both forward and inverse kinematics.
+\subsection{Voltage Regulation}
 
-\subsection{Forward Kinematics}
-Forward kinematics is the process of determining the position and orientation of a robot's end-effector from known joint parameters. The Denavit-Hartenberg (D-H) convention is a standard method used to express the transformation for each joint. For joint \( i \), the transformation matrix is:
-\[
-\mathbf{T}_i = \begin{bmatrix}
-\cos\theta_i & -\sin\theta_i \cos\alpha_i & \sin\theta_i \sin\alpha_i & a_i \cos\theta_i \\
-\sin\theta_i & \cos\theta_i \cos\alpha_i  & -\cos\theta_i \sin\alpha_i & a_i \sin\theta_i \\
-0            & \sin\alpha_i              & \cos\alpha_i              & d_i \\
-0            & 0                         & 0                         & 1
-\end{bmatrix}
-\]
-The cumulative transformation to the end-effector is given by:
-\[
-\mathbf{T}_{\text{end-effector}} = \prod_{i=1}^{n} \mathbf{T}_i
-\]
-This formulation is vital for simulation and trajectory planning, and it is widely implemented in robotics software such as MATLAB and ROS \cite{Spong2006}.
+Robotic systems integrate components operating at different voltage levels. Step-down (buck) converters are therefore used to regulate battery voltages to stable logic and peripheral supply rails. Popular and well-documented modules such as Mini360 and regulators based on the LM2596 family are employed due to their high efficiency, thermal stability, and widespread availability \cite{ti_lm2596}.
 
-\subsection{Inverse Kinematics}
-Inverse kinematics seeks the joint parameters that achieve a desired end-effector pose. Unlike forward kinematics, inverse kinematics is generally nonlinear and may yield multiple or no solutions due to the presence of singularities. Two primary approaches include:
+Distributed regulation improves fault tolerance and enables independent scaling of subsystems.
+
+\section{Signal Integrity and Noise Management}
+
+Robotic electronics often combine low-level analog signals with high-current switching devices. To ensure reliable operation, the following practices are applied:
+
 \begin{itemize}
-    \item \textbf{Analytical Methods:} Closed-form solutions are feasible for simpler kinematic chains but quickly become intractable with increased degrees of freedom.
-    \item \textbf{Numerical Methods:} Iterative algorithms such as the Newton-Raphson method or methods based on the Jacobian matrix are employed to converge on a solution.
-\end{itemize}
-The Jacobian matrix \( \mathbf{J} \) is defined as:
-\[
-\mathbf{J}(\mathbf{q}) = \frac{\partial \mathbf{x}}{\partial \mathbf{q}}
-\]
-where \( \mathbf{q} \) represents the joint variables and \( \mathbf{x} \) the end-effector position. It relates the joint velocities \( \dot{\mathbf{q}} \) to the end-effector velocity \( \dot{\mathbf{x}} \):
-\[
-\dot{\mathbf{x}} = \mathbf{J}(\mathbf{q}) \dot{\mathbf{q}}
-\]
-Advanced studies in redundancy resolution and singularity avoidance \cite{Lynch2017} further extend the practical application of these models.
-
-\section{Interdisciplinary Nature of Robotics}
-Robotic systems integrate diverse fields, each contributing unique methodologies and insights.
-
-\subsection{Mechanical Engineering}
-Mechanical engineering underpins the design and fabrication of the physical structure. Key considerations include:
-\begin{itemize}
-    \item \textbf{Structural and Material Analysis:} Techniques such as finite element analysis (FEA) assess the durability and performance of robot components.
-    \item \textbf{Mechanism Design:} Analyzing kinematic chains, joint configurations, and mobility mechanisms is essential for ensuring reliable operation under various conditions.
-\end{itemize}
-Classical texts, such as those by Spong \emph{et al.} \cite{Spong2006}, provide deep insights into these principles.
-
-\subsection{Electrical and Electronics Engineering}
-This discipline focuses on:
-\begin{itemize}
-    \item \textbf{Circuit and Sensor Integration:} Designing custom PCBs, interfacing diverse sensors, and ensuring efficient power management are critical, especially for platforms requiring long battery life.
-    \item \textbf{Signal Processing:} Filtering and interpreting sensor data to provide accurate feedback for control algorithms.
-\end{itemize}
-These topics are discussed extensively in foundational works like \cite{Craig2005}.
-
-\subsection{Computer Science and Control Theory}
-Software and control algorithms are the brain of robotic systems:
-\begin{itemize}
-    \item \textbf{Control Strategies:} The implementation of PID controllers, model predictive control (MPC), and adaptive algorithms enables stable and responsive behavior.
-    \item \textbf{Software Architectures:} Developing modular, scalable, and real-time software platforms is essential for integrating various subsystems. Open-source frameworks like ROS have revolutionized this integration.
-\end{itemize}
-For a comprehensive treatment, refer to \cite{Siciliano2009}.
-
-\subsection{Systems Engineering}
-Systems engineering ensures that all components operate harmoniously:
-\begin{itemize}
-    \item \textbf{Integration and Testing:} Systematic approaches for validating interoperability and performance are vital.
-    \item \textbf{Lifecycle Management:} Structured methodologies help manage the complexity of designing, developing, and deploying advanced robotic systems.
-\end{itemize}
-This holistic perspective is crucial for the successful implementation of modular and adaptable platforms.
-
-\section{Research Approach}
-The methodology of this thesis is built on the principles of abstraction and modularity. Rather than developing fixed-function systems, the focus is on creating versatile platforms with the following core components:
-\begin{itemize}
-    \item \textbf{Abstraction:} By decoupling hardware from software, the design allows for independent evolution and easy integration of new technologies.
-    \item \textbf{Modularity:} Systems are conceived as collections of interchangeable modules, enabling rapid prototyping, iterative testing, and scalability. This approach is supported by recent research on modular self-reconfigurable robots \cite{Yim2007}.
-    \item \textbf{Theory-Practice Integration:} Theoretical models, such as the kinematic formulations presented earlier, are used to inform design choices and are validated through extensive simulations and experiments.
+	\item Local decoupling capacitors near IC power pins
+	\item Separation of high-current and low-signal paths
+	\item Short signal traces for high-speed or sensitive signals
+	\item Logical grounding strategies to minimize noise coupling
 \end{itemize}
 
-This integrated research strategy ensures that the platforms developed are not only scientifically sound but also practical and adaptable to various applications. Future work may extend these concepts to explore self-reconfigurable systems and advanced adaptive control methods.
+These techniques are well established in embedded and mixed-signal system design \cite{williams2004}.
 
-\section{Conclusion}
-This chapter has established a superficial robotics foundation for the thesis. By exploring advanced kinematic models, the interdisciplinary framework that supports modern robotics, and a methodologically rigorous research approach, the groundwork has been laid for the subsequent chapters. The next sections will build on these concepts by detailing the design, implementation, and experimental validation of the modular robotic platforms, thereby contributing to the evolution of accessible and adaptable robotics.
+\section{Input and Output Expansion}
 
+\subsection{Digital Expansion}
+
+Shift registers are used to expand digital outputs while minimizing GPIO usage. By serially shifting bit patterns, multiple outputs can be controlled using a small number of microcontroller pins. This approach is effective for driving LEDs, relays, and generating software-based PWM signals \cite{monk2017}.
+
+\subsection{Analog Expansion}
+
+Analog multiplexers (MUX) allow multiple analog sensors to share a single ADC channel. This technique is especially useful when integrating numerous sensors without increasing microcontroller complexity or pin count.
+
+\section{Actuation and Signal Amplification}
+
+Microcontroller GPIO pins are insufficient for directly driving motors, solenoids, or high-power loads. Therefore, signal amplification stages are introduced:
+
+\begin{itemize}
+	\item \textbf{Bipolar transistors} for low-power switching
+	\item \textbf{MOSFETs} for high-current applications due to low on-resistance
+	\item Push-pull and H-bridge configurations for bidirectional control
+\end{itemize}
+
+These circuits form the basis of motor drivers and power switching stages across all platforms \cite{horowitz2015}.
+
+\section{Sensors and Peripheral Modules}
+
+The platforms integrate a wide range of sensors and peripherals using standardized interfaces such as I\textsuperscript{2}C, SPI, and UART. Common peripherals include:
+
+\begin{itemize}
+	\item Inertial Measurement Units (IMUs) for orientation and motion estimation; MPU6040
+	\item Distance and proximity sensors (ultrasonic, infrared)
+	\item Audio indicators such as buzzers and LEDs for feedback and debugging
+\end{itemize}
+
+Standardized interfaces ensure compatibility, reusability, and ease of integration.
+
+\section{Microcontroller Architectures and Selection}
+
+Microcontroller choice significantly impacts system scalability and performance.
+
+\subsection{8-bit Microcontrollers}
+
+Platforms such as µTomba use 8-bit AVR microcontrollers (e.g., Arduino Nano) for educational purposes. These devices offer simplicity and accessibility but are constrained by limited RAM, flash memory, and processing capability \cite{monk2017}.
+
+\subsection{32-bit Microcontrollers}
+
+More advanced platforms employ 32-bit microcontrollers, including the ESP32 and ESP32-S3 families. These devices, based on the Xtensa architecture, provide:
+
+\begin{itemize}
+	\item 32-bit word size for faster computation
+	\item Larger addressable memory spaces
+	\item Integrated communication peripherals
+\end{itemize}
+
+ESP32-based controllers offer hundreds of kilobytes of SRAM and multiple megabytes of flash, enabling complex firmware, graphical interfaces, and communication stacks to coexist \cite{espressif2023}.
+
+\section{Implementation Across Platforms}
+
+The electronic design philosophy is applied consistently across all robotic systems:
+
+\begin{itemize}
+	\item \textbf{\mu Tomba and Dronegaze:} Breadboard-based circuits for rapid prototyping and education
+	\item \textbf{Bulky:} Custom PCB (BULKER32) for robustness and signal integrity
+	\item \textbf{Thegill:} GillerS3 (ESP32-S3) and GillerDUO (ESP32 + RP2040) for high-performance and distributed control
+\end{itemize}
+
+This progression from breadboard to custom PCB reflects the MVP-to-MRP maturation process.
+
+\subsection{BULKER32 design}
+
+\subsection{GillerDUO design}
+
+\subsection{GillerS3 design}
+
+\subsection{Breadboard based designs}
+Since the primary reason this option exists is for pedagogic and teaching applications, it is helpful to include component kits and guides with the MRPs explaining the mechanism of breadboards and how to use them as well as circuit examples and templates as can be shown in the figures below. 
+
+with these 3 circuits, we have multiple options to realize MVPs that serve as customizable MRPs 
+
+\section{ILITE Controller: Electronic Design Rationale}
+
+ILITE serves as a unifying control interface across the proposed Modular Robotic Platforms (MRPs). Its electronic design prioritizes robustness, scalability, and usability while maintaining compatibility with heterogeneous robotic configurations. The controller integrates human input devices, sensing, display, and processing within a compact and power-efficient architecture.
+
+\subsection{Human Interface Components}
+
+ILITE integrates multiple input modalities to support intuitive and reliable user interaction.
+
+\subsubsection{Analog Joysticks and potentiometers}
+
+Two analog joysticks are used to provide continuous two-dimensional control inputs. These devices typically operate within a 0–3.3\,V or 0–5\,V range and draw negligible current (on the order of microamperes), making them well-suited for low-power embedded systems. Analog joysticks interface directly with the microcontroller’s ADC, enabling high-resolution input sampling and smooth control behavior \cite{horowitz2015}.
+
+\subsubsection{Rotary Encoders}
+
+Incremental rotary encoders are employed for precise user input and navigation. Encoders offer advantages over potentiometers in terms of durability and repeatability, as they are not subject to mechanical wear of resistive elements. Their digital quadrature outputs allow accurate position and direction detection with minimal processing overhead \cite{monk2017}.
+
+\subsubsection{Buttons with Hardware Debouncing}
+
+Push buttons are interfaced using a Schmitt trigger–based conditioning circuit implemented with a NOT gate, resistors, capacitors, and diodes. This approach introduces hysteresis and RC filtering to suppress contact bounce and noise at the hardware level. Hardware debouncing reduces software complexity and ensures reliable state transitions, particularly in noisy environments or during fast user interaction \cite{williams2004}.
+
+\subsection{Visual Feedback Interface}
+
+An SH1106-based OLED display connected via the I\textsuperscript{2}C bus is used to provide graphical feedback. OLED technology was selected due to its low power consumption, high contrast ratio, and wide viewing angle. The SH1106 controller supports resolutions sufficient for menus, telemetry, and debugging information while consuming only a few tens of milliamperes during active operation \cite{sh1106datasheet}.
+
+The use of I\textsuperscript{2}C minimizes pin usage and allows the display to coexist with other peripherals on the same bus, reinforcing the modular philosophy of ILITE.
+
+\subsection{Microcontroller Architecture and Word Size}
+
+ILITE is designed around 32-bit microcontroller architectures, specifically the ESP32 and ESP32-S3 families. These devices are based on the Xtensa LX6/LX7 architecture and provide significant advantages over traditional 8-bit microcontrollers such as AVR-based devices.
+
+Compared to 8-bit architectures, 32-bit microcontrollers offer:
+\begin{itemize}
+	\item Wider word size, enabling faster arithmetic and control computations
+	\item Larger addressable memory spaces
+	\item Native support for advanced peripherals and communication protocols
+\end{itemize}
+
+ESP32-class devices typically provide hundreds of kilobytes of SRAM and several megabytes of external flash, allowing complex firmware, graphical interfaces, and communication stacks to coexist within a single system \cite{espressif2023}.
+
+In contrast, 8-bit AVR microcontrollers, such as those used in Arduino Nano–based systems, offer limited RAM and flash memory, making them more suitable for educational platforms such as µTomba but less appropriate for feature-rich controllers like ILITE \cite{monk2017}.
+
+\subsection{Power and Current Considerations}
+
+The electronic components of ILITE are selected to operate within safe and efficient current limits. Input devices and displays draw relatively low currents, while the microcontroller represents the primary power consumer, particularly during wireless communication or intensive computation.
+
+ESP32-based systems are capable of dynamic power scaling and low-power modes, allowing ILITE to balance performance and energy efficiency. Voltage regulation and decoupling strategies discussed earlier ensure stable operation even under varying load conditions.
+
+\subsection{Design Justification}
+
+The combination of robust input conditioning, efficient display technology, and a 32-bit microcontroller architecture enables ILITE to function as a scalable and reusable controller across multiple robotic platforms. By abstracting hardware complexity while retaining performance headroom, ILITE embodies the electronic principles of the Modular Robotic Platform concept.
+
+\section{Chapter Summary}
+
+This chapter presented the electronic foundations of the proposed modular robotic platforms. Through careful selection of power architectures, signaling techniques, microcontroller families, and implementation strategies, the electronic layer supports scalability, robustness, and reuse. These foundations enable the software abstractions and communication frameworks discussed in the following chapter.
